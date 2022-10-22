@@ -1,12 +1,10 @@
-class Player {
-	constructor(x, y) {
-		this.x = x;
-		this.y = y;
-	}
-}
 const gamingDraw = function () {
-	rect("hsl(0, 100%, 30%)", 0, 0, fixedScreenSize.x, fixedScreenSize.y); //arena size
-	drawImage(square, 900, 0, 50, 50);
+	strokeRect("green", 0, 0, fixedScreenSize.x, fixedScreenSize.y); //arena size
+	player.draw();
+	level.forEach((e) => e.draw());
+};
+const gamingUpdate = function () {
+	player.update();
 };
 function randomNumber(a, b) {
 	return Math.floor(Math.random() * (b - a) + a);

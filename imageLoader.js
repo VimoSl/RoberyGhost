@@ -16,6 +16,19 @@ function rect(c, x, y, sx, sy) {
 	);
 	context.restore();
 }
+
+function strokeRect(c, x, y, sx, sy) {
+	context.save();
+	context.strokeStyle = c;
+	context.translate(transX, transY);
+	context.strokeRect(
+		x * screenRatio,
+		y * screenRatio,
+		sx * screenRatio,
+		sy * screenRatio
+	);
+	context.restore();
+}
 function drawImage(img, x, y, xs, ys) {
 	context.save();
 	context.translate(transX, transY);

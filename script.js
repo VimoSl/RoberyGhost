@@ -1,4 +1,8 @@
-function update() {}
+function update() {
+	if (State == gamingState) {
+		gamingUpdate();
+	}
+}
 function draw() {
 	context.globalAlpha = 1;
 	context.fillStyle = "black";
@@ -10,7 +14,10 @@ function draw() {
 	requestAnimationFrame(draw);
 }
 document.addEventListener("keydown", function (e) {
-	console.log(e.key);
+	isKeyPressed[e.keyCode] = true;
+});
+document.addEventListener("keyup", function (e) {
+	isKeyPressed[e.keyCode] = false;
 });
 document.addEventListener("mousemove", function (e) {
 	mx = e.x;
