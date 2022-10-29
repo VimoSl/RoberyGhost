@@ -43,3 +43,5 @@ function drawImage(img, x, y, xs, ys) {
 }
 let circle = loadImg("./images/circle.png");
 let square = loadImg("./images/square.png");
+let ghost = loadImg("./images/ghost.png");
+let ghostBack = loadImg("./images/ghost_back.png");

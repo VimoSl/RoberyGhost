@@ -18,6 +18,9 @@ document.addEventListener("keydown", function (e) {
 });
 document.addEventListener("keyup", function (e) {
 	isKeyPressed[e.keyCode] = false;
+	if(State==gamingState){
+		gamingKeyUp(e.keyCode);
+	}
 });
 document.addEventListener("mousemove", function (e) {
 	mx = e.x;
