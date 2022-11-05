@@ -7,12 +7,16 @@ canvas.width = window.innerWidth;
 const gamingState = 0;
 const mainState = 1;
 const fixedScreenSize = { x: 1000, y: 500 };
-
+let clicked = false;
+let time = 0;
 const isKeyPressed = [];
 for (let i = 0; i < 256; i++) {
 	isKeyPressed[i] = false;
 }
-
+const angleBetween = function(cx, cy, ax, ay){
+	let ox = ax-cx, oy = ay-cy;
+	return Math.atan2(oy, ox);
+}
 const areColliding = function (pos1, pos2) {
 	return (
 		pos2.x <= pos1.x + pos1.sx &&
@@ -21,7 +25,11 @@ const areColliding = function (pos1, pos2) {
 		pos1.y <= pos2.y + pos2.sy
 	);
 };
-
+const coolRotete = function(x, y, angle){
+	context.translate(x, y);
+	context.rotate(angle);
+	context.translate(-x, -y);
+}
 const keyLeft = 65;
 const keyRight = 68;
 const keyUp = 87;

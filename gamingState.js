@@ -1,5 +1,32 @@
 let player, camera = {x: 0, y: 0};
 let currLvl = Levels[0];
+class Clones{
+	constructor(len){
+		this.arr = new Array(len);
+		for(let i=0; i<len; i++){
+			this.arr[i] = {x: Infinity, y: Infinity, angle: Infinity};
+		}
+	}
+	set(last){
+		for(let i=0; i<this.arr.length-1; i++){
+			this.arr[i].x = this.arr[i+1].x;
+			this.arr[i].y = this.arr[i+1].y;
+			this.arr[i].angle = this.arr[i+1].angle;
+		}
+		this.arr[this.arr.length-1].x = last.x;
+		this.arr[this.arr.length-1].y = last.y;
+		this.arr[this.arr.length-1].angle = last.angle;
+	}
+	draw(){
+		for(let i in this.arr){
+			context.save();
+			context.globalAlpha = 0.001*i;
+			coolRotete((this.arr[i].x+player.sx/2)*screenRatio+transX, (this.arr[i].y+player.sy/2)*screenRatio+transY, this.arr[i].angle+Math.PI/2);
+			drawImage(ghost, this.arr[i].x, this.arr[i].y, player.sx, player.sy);
+			context.restore();
+		}
+	}
+}
 class Player {
 	constructor(startPos) {
 		this.x = startPos.x;
@@ -9,6 +36,11 @@ class Player {
 		this.cooldown = 0;
 		this.transAfter = -1;
 		this.ghost = false;
+		this.angle = 0;
+		this.xScreen = (this.x+this.sx/2)*screenRatio+camera.x+transX;
+		this.yScreen = (this.y+this.sy/2)*screenRatio+camera.y+transY;
+		this.speed = this.ghost?0.5:1;
+		this.clones = new Clones(50);
 	}
 	isInCollision() {
 		for(let e of currLvl.objects){
@@ -32,17 +64,24 @@ class Player {
 		if(this.transAfter>0){
 			return 0;
 		}
+		this.speed = !this.ghost?0.5:1;
+		this.xScreen = (this.x+this.sx/2)*screenRatio+camera.x+transX;
+		this.yScreen = (this.y+this.sy/2)*screenRatio+camera.y+transY;
+		this.angle = angleBetween(this.xScreen, this.yScreen, mx, my);
 		this.moveBy({
-			x: isKeyPressed[keyLeft] * -1 + isKeyPressed[keyRight] * 1,
-			y: isKeyPressed[keyUp] * -1 + isKeyPressed[keyDown] * 1,
+			x: Math.cos(this.angle)*clicked*this.speed,//isKeyPressed[keyLeft] * -1 + isKeyPressed[keyRight] * 1,
+			y: Math.sin(this.angle)*clicked*this.speed//isKeyPressed[keyUp] * -1 + isKeyPressed[keyDown] * 1,
 		});
 		if(this.isInCollision()){
 			this.moveBy({
-				x: -(isKeyPressed[keyLeft] * -1 + isKeyPressed[keyRight] * 1),
-				y: -(isKeyPressed[keyUp] * -1 + isKeyPressed[keyDown] * 1),
+				x: -Math.cos(this.angle)*this.speed,//isKeyPressed[keyLeft] * -1 + isKeyPressed[keyRight] * 1,
+				y: -Math.sin(this.angle)*this.speed//isKeyPressed[keyUp] * -1 + isKeyPressed[keyDown] * 1,
 			});
 		}
 		this.cooldown--;
+		if(time%1==0){
+			this.clones.set(this);
+		}
 	}
 	screenF(){
 		context.lineWidth = 5;
@@ -56,13 +95,21 @@ class Player {
 			this.cooldown = Math.max(0, this.cooldown);
 			rect("red", fixedScreenSize.x/2-135/2, 400, this.transAfter*3, 20);
 		}
+		context.fillStyle = "white";
+		// context.fillRect((this.x+this.sx/2)*screenRatio+camera.x+transX, (this.y+this.sy/2)*screenRatio+camera.y+transY, 10, 10);
 	}
 	draw() {
+		if(this.ghost){
+			this.clones.draw();
+		}
+		context.save();
+		coolRotete((this.x+this.sx/2)*screenRatio+transX, (this.y+this.sy/2)*screenRatio+transY, this.angle+Math.PI/2);
 		if(this.ghost){
 			drawImage(ghost, this.x, this.y, this.sx, this.sy);
 		}else{
 			rect("green", this.x, this.y, this.sx, this.sy);
 		}
+		context.restore();
 		// drawImage(circle, this.x, this.y, this.sx, this.sy);
 	}
 }
@@ -114,4 +161,3 @@ function dist(x1, y1, x2, y2) {
 function dist(x1, y1, x2, y2) {
 	return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
-// koi? igrata

@@ -1,4 +1,5 @@
 function update() {
+	time++;
 	if (State == gamingState) {
 		gamingUpdate();
 	}
@@ -25,6 +26,12 @@ document.addEventListener("keyup", function (e) {
 document.addEventListener("mousemove", function (e) {
 	mx = e.x;
 	my = e.y;
+});
+document.addEventListener("mousedown", function (e) {
+	clicked = true;
+});
+document.addEventListener("mouseup", function (e) {
+	clicked = false;
 });
 draw();
 setInterval(update, 10);
